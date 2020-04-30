@@ -1,0 +1,19 @@
+{
+  "hosting": [
+    {
+      "target": "housie-app",
+      "public": "dist/housie-app",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}

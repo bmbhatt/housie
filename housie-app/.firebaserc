@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "housie-app-c2e99": {
+      "hosting": {
+        "housie-app": [
+          "housie-app-c2e99"
+        ]
+      }
+    }
+  }
+}
