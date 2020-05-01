@@ -1,0 +1,28 @@
+<div style="padding: 13px;">
+    <mat-spinner *ngIf="pending"></mat-spinner>
+    <mat-card >
+        <mat-card-content>
+            <p class="mat-display-4" *ngIf='nextNumber > 0'>
+                {{nextNumber}}
+            </p>
+            <p class="mat-display-3" *ngIf='nextNumber == -1'>
+                Done!
+            </p>
+            <p class="mat-display-3" *ngIf='nextNumber == 0'>
+                Ready
+            </p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button (click)="nextNum()" mat-raised-button color="primary">Next Number</button>
+            <button mat-button>Previous : {{previousNumber}}</button>
+            <button (click)="openConfirmationDialog()" mat-raised-button color="warn" style="float: right;">Restart</button>
+        </mat-card-actions>
+    </mat-card>
+    <mat-card style="margin-top:10px;">
+        <mat-grid-list cols="10" rowHeight="fit" style="height: 300px;" gutterSize="3px">
+            <mat-grid-tile *ngFor='let num of allDigits' [ngStyle]="{'background-color': num.selected === true ? 'red' : 'lightblue'}">
+                {{num.id}}
+            </mat-grid-tile>
+        </mat-grid-list>
+    </mat-card>
+</div>

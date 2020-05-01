@@ -19,6 +19,7 @@ import { TicketsComponent } from './tickets/tickets.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationDialogService } from './confirmation-dialog/confirmation-dialog.service';
+import { StboardComponent } from './stboard/stboard.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ConfirmationDialogService } from './confirmation-dialog/confirmation-di
     AboutComponent,
     BoardComponent,
     TicketsComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    StboardComponent
   ],
   imports: [
     BrowserModule,
