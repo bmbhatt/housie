@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AboutComponent implements OnInit {
 
+  link: string = "https://meetingsamer4.webex.com/meetingsamer4/j.php?MTID=mb41b0fdece55cd4c4c59025d919aea18";
+
   constructor() { }
 
   ngOnInit(): void {
