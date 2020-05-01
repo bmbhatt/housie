@@ -15,7 +15,6 @@
         <mat-card-actions>
             <button (click)="wsAskForNextNumber()" mat-raised-button color="primary">Next Number</button>
             <button mat-button>Previous : {{previousNumber}}</button>
-            <button (click)="openConfirmationDialog()" mat-raised-button color="warn" style="float: right;">Restart</button>
         </mat-card-actions>
     </mat-card>
     <mat-card style="margin-top:10px;">
@@ -24,5 +23,8 @@
                 {{num.id}}
             </mat-grid-tile>
         </mat-grid-list>
+        <mat-card-actions>
+            <button (click)="openConfirmationDialog()" mat-raised-button color="warn">Restart</button>
+        </mat-card-actions>
     </mat-card>
 </div>
