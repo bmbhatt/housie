@@ -53,7 +53,6 @@ export class BoardComponent implements OnInit {
   }
 
   reset(): void {
-    this.disconnect();
     this.apiService.reset().subscribe();
     this.allNumbers = [];
     this.initAllDigits();
@@ -106,6 +105,7 @@ wsAskForNextNumber(){
 }
 
 wsProcessNextNumberResponse(message){
+    this.previousNumber = this.nextNumber;
     this.nextNumber = message;
     this.allDigits[this.nextNumber - 1] = { 'id': this.nextNumber, 'selected': true };
 }
