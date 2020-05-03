@@ -25,12 +25,13 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.pending=true;
     this.webSocketAPI = new WebSocketAPI(this);
+    this.initialize();
+  }
+
+  initialize(): void {
     this.connect();
-    this.fetchAll();
-    this.currentNum();
-    this.previousNum();
-    this.pending=false;
   }
 
   fetchAll(): void {
@@ -69,6 +70,7 @@ export class BoardComponent implements OnInit {
   currentNum(): void {
     this.apiService.current().subscribe((num: any) => {
       this.nextNumber = num;
+      console.log("Current no ...."+num);
       this.allDigits[this.nextNumber - 1] = { 'id': this.nextNumber, 'selected': true };
     });
   }
@@ -108,5 +110,14 @@ wsProcessNextNumberResponse(message){
     this.previousNumber = this.nextNumber;
     this.nextNumber = message;
     this.allDigits[this.nextNumber - 1] = { 'id': this.nextNumber, 'selected': true };
+}
+
+markPending(pend) {
+  if(!pend) {
+    this.previousNum();
+    this.currentNum();
+    this.fetchAll();
+  }
+  this.pending=pend;
 }
 }

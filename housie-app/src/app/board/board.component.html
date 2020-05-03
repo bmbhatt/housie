@@ -2,6 +2,9 @@
     <mat-spinner *ngIf="pending"></mat-spinner>
     <mat-card >
         <mat-card-content>
+            <p class="mat-display-3" *ngIf='nextNumber == -999'>
+                Connecting.....
+            </p>
             <p class="mat-display-4" *ngIf='nextNumber > 0'>
                 {{nextNumber}}
             </p>
@@ -13,7 +16,7 @@
             </p>
         </mat-card-content>
         <mat-card-actions>
-            <button (click)="wsAskForNextNumber()" mat-raised-button color="primary">Next Number</button>
+            <button (click)="wsAskForNextNumber()" mat-raised-button color="primary" *ngIf="!pending">Next Number</button>
             <button mat-button>Previous : {{previousNumber}}</button>
         </mat-card-actions>
     </mat-card>

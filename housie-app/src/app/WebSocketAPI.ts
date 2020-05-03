@@ -19,13 +19,21 @@ export class WebSocketAPI {
         console.log("Initiazing web socket connection....");
         let ws = new SockJS(this.webSocketEndPoint);
         this.stompClient = Stomp.over(ws);
+        this.stompClient.connect({}, (frame) => {
+            this.successCallback();
+        }, () => {
+            this.reconnect(this.webSocketEndPoint, this.successCallback);
+          });
+    }
+    
+    successCallback() {
+        console.log("Connected.....");
+        this.markPending(false);
         const _this = this;
-        _this.stompClient.connect({}, function (frame) {
-            _this.stompClient.subscribe(_this.topic, function (sdkEvent) {
-                _this.onMessageReceived(sdkEvent);
-            })
-        }, this.errorCallBack);
-    }   
+        _this.stompClient.subscribe(_this.topic, function (sdkEvent) {
+            _this.onMessageReceived(sdkEvent);
+        })
+    }
 
     _isConnected() {
         return this.stompClient != null;
@@ -38,9 +46,27 @@ export class WebSocketAPI {
         console.log("Disconnect");
     }
 
+    reconnect(socketUrl, successCallback) {
+        let connected = false;
+        let reconInv = setInterval(() => {
+          let ws = new SockJS(this.webSocketEndPoint);
+          this.stompClient = Stomp.over(ws);
+          this.stompClient.connect({}, (frame) => {
+            clearInterval(reconInv);
+            connected = true;
+            successCallback();
+          }, () => {
+            if (connected) {
+              this.reconnect(socketUrl, successCallback);
+            }
+          });
+        }, 10000);
+    }
+
     errorCallBack(error) {
         console.log("errorCallBack -> " + error);
         setTimeout(() => {
+            this.markPending(true);
             this._connect();
         }, 5000);
     }
@@ -56,5 +82,9 @@ export class WebSocketAPI {
 
     onMessageReceived(message) {
         this.boardComponent.wsProcessNextNumberResponse(message.body);
+    }
+
+    markPending(pend) {
+        this.boardComponent.markPending(pend);
     }
 }

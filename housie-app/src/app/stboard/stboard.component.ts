@@ -25,7 +25,7 @@ export class StboardComponent implements OnInit {
     this.fetchAll();
     this.currentNum();
     this.previousNum();
-    this.pending=false;
+    this.pending=true;
   }
 
   fetchAll(): void {
@@ -35,6 +35,7 @@ export class StboardComponent implements OnInit {
       for (let index = 0; index < this.allNumbers.length; index++) {
         this.allDigits[this.allNumbers[index] - 1] = { 'id': this.allNumbers[index], 'selected': true };
       }
+      this.pending=false;
     });
   }
 
