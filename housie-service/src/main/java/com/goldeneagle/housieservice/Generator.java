@@ -13,6 +13,10 @@ public class Generator {
 
     private Random random = new Random();
 
+    public Generator() {
+        System.out.println(".................Generator Constructor called.................");
+    }
+
     public int getNext() {
         if(list.size() < (length - 1)) {
             int next = random.nextInt(length);
