@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApiService } from '../api.service';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
 import { WebSocketAPI } from '../WebSocketAPI';
@@ -9,7 +9,7 @@ import { SpeechSynthesizerService } from '../speech-synthesizer.service';
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.css']
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent implements OnInit, OnDestroy {
 
   nextNumber: any;
   muted: boolean = false;
@@ -31,6 +31,10 @@ export class BoardComponent implements OnInit {
     this.pending=true;
     this.webSocketAPI = new WebSocketAPI(this);
     this.getall();
+  }
+
+  ngOnDestroy() {
+    console.log("ondestroy called.")
   }
 
   mute() {
