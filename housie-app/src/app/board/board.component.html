@@ -18,11 +18,15 @@
         <mat-card-actions>
             <button (click)="wsAskForNextNumber()" mat-raised-button color="primary" *ngIf="!pending">Next Number</button>
             <button mat-button>Previous : {{previousNumber}}</button>
+            <button (click)="mute()" mat-button mat-raised-button>
+                <mat-icon *ngIf='muted'>volume_off</mat-icon>
+                <mat-icon *ngIf='!muted'>volume_up</mat-icon>
+            </button>
         </mat-card-actions>
     </mat-card>
     <mat-card style="margin-top:10px;">
         <mat-grid-list cols="10" rowHeight="fit" style="height: 300px;" gutterSize="3px">
-            <mat-grid-tile *ngFor='let num of allDigits' [ngStyle]="{'background-color': num.selected === true ? 'red' : 'lightblue'}">
+            <mat-grid-tile *ngFor='let num of allDigits' [ngStyle]="{'background-color': num.selected === true ? 'gray' : 'lightgray'}">
                 {{num.id}}
             </mat-grid-tile>
         </mat-grid-list>

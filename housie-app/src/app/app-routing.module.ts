@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: '', redirectTo: 'stboard', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'about', component: AboutComponent },
-  { path: 'board', component: StboardComponent },
+  { path: 'board', component: BoardComponent },
   { path: 'tickets', component: TicketsComponent },
   { path: 'stboard', component: StboardComponent }
 ];

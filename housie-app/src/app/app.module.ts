@@ -20,6 +20,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationDialogService } from './confirmation-dialog/confirmation-dialog.service';
 import { StboardComponent } from './stboard/stboard.component';
+import { SpeechSynthesizerService } from './speech-synthesizer.service';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,7 @@ import { StboardComponent } from './stboard/stboard.component';
     MatGridListModule,
     NgbModule
   ],
-  providers: [ConfirmationDialogService],
+  providers: [ConfirmationDialogService, SpeechSynthesizerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

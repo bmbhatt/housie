@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
-import { Variable } from '@angular/compiler/src/render3/r3_ast';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
 import { WebSocketAPI } from '../WebSocketAPI';
+import { SpeechSynthesizerService } from '../speech-synthesizer.service';
 
 @Component({
   selector: 'app-board',
@@ -12,6 +12,7 @@ import { WebSocketAPI } from '../WebSocketAPI';
 export class BoardComponent implements OnInit {
 
   nextNumber: any;
+  muted: boolean = false;
   pending: boolean = true;
   previousNumber: any;
   start: any;
@@ -20,18 +21,30 @@ export class BoardComponent implements OnInit {
 
   webSocketAPI: WebSocketAPI;
 
-  constructor(private apiService: ApiService, private confirmationDialogService: ConfirmationDialogService) {
+  constructor(private apiService: ApiService,
+    private confirmationDialogService: ConfirmationDialogService,
+    private speechSynthesizer: SpeechSynthesizerService) {
     this.initAllDigits();
   }
 
   ngOnInit(): void {
     this.pending=true;
     this.webSocketAPI = new WebSocketAPI(this);
-    this.initialize();
+    this.getall();
   }
 
-  initialize(): void {
+  mute() {
+    if(this.muted)
+      this.muted = false;
+    else
+      this.muted = true;
+  }
+
+  getall(): void {
     this.connect();
+    this.fetchAll();
+    this.currentNum();
+    this.previousNum();
   }
 
   fetchAll(): void {
@@ -48,9 +61,40 @@ export class BoardComponent implements OnInit {
     this.previousNumber = this.nextNumber;
     this.apiService.getNewNumber().subscribe((num: any) => {
       console.log("number retrieved = " + num);
+      if(!this.muted) {
+        var spMsg = this.parap(num);
+        this.speechSynthesizer.speak(spMsg, 'en-US');
+      }
       this.nextNumber = num;
       this.allDigits[this.nextNumber - 1] = { 'id': this.nextNumber, 'selected': true };
     });
+  }
+
+  parap(num) {
+    var msg;
+    var one = Math.floor(num / 10);
+    var two = num % 10;
+    if(one === 0) {
+      msg = 'only number ' + this.now(two);
+    } else {
+      msg = this.now(one) + ' ' + this.now(two) + ' ' + num;
+    }
+    return msg;
+  }
+
+  now(no) {
+    switch(no) {
+      case 1: return "one";
+      case 2: return "two";
+      case 3: return "three";
+      case 4: return "four";
+      case 5: return "five";
+      case 6: return "six";
+      case 7: return "seven";
+      case 8: return "eight";
+      case 9: return "nine";
+      case 0: return "zero";
+    }
   }
 
   reset(): void {
@@ -107,6 +151,10 @@ wsAskForNextNumber(){
 }
 
 wsProcessNextNumberResponse(message){
+    if(!this.muted) {
+      var spMsg = this.parap(message);
+      this.speechSynthesizer.speak(spMsg, 'en-US');
+    }
     this.previousNumber = this.nextNumber;
     this.nextNumber = message;
     this.allDigits[this.nextNumber - 1] = { 'id': this.nextNumber, 'selected': true };

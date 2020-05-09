@@ -15,6 +15,13 @@
         <mat-card-actions>
             <button (click)="nextNum()" mat-raised-button color="primary">Next Number</button>
             <button mat-button>Previous : {{previousNumber}}</button>
+            <button (click)="getall()" mat-button mat-raised-button>
+                <mat-icon>refresh</mat-icon>
+            </button>
+            <button (click)="mute()" mat-button mat-raised-button>
+                <mat-icon *ngIf='muted'>volume_off</mat-icon>
+                <mat-icon *ngIf='!muted'>volume_up</mat-icon>
+            </button>
         </mat-card-actions>
     </mat-card>
     <mat-card style="margin-top:10px;">

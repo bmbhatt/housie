@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
-import { Variable } from '@angular/compiler/src/render3/r3_ast';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
+import { SpeechSynthesizerService } from '../speech-synthesizer.service';
 
 @Component({
   selector: 'app-stboard',
@@ -10,6 +10,7 @@ import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-d
 })
 export class StboardComponent implements OnInit {
 
+  muted: boolean = false;
   nextNumber: any;
   pending: boolean = true;
   previousNumber: any;
@@ -17,15 +18,28 @@ export class StboardComponent implements OnInit {
   allNumbers = [];
   allDigits = new Array(90);
 
-  constructor(private apiService: ApiService, private confirmationDialogService: ConfirmationDialogService) {
+  constructor(private apiService: ApiService, 
+    private confirmationDialogService: ConfirmationDialogService,
+    private speechSynthesizer: SpeechSynthesizerService) {
     this.initAllDigits();
   }
 
   ngOnInit(): void {
+    this.getall();
+    this.pending=true;
+  }
+
+  getall(): void {
     this.fetchAll();
     this.currentNum();
     this.previousNum();
-    this.pending=true;
+  }
+
+  mute() {
+    if(this.muted)
+      this.muted = false;
+    else
+      this.muted = true;
   }
 
   fetchAll(): void {
@@ -43,9 +57,40 @@ export class StboardComponent implements OnInit {
     this.previousNumber = this.nextNumber;
     this.apiService.getNewNumber().subscribe((num: any) => {
       console.log("number retrieved = " + num);
+      if(!this.muted) {
+        var spMsg = this.parap(num);
+        this.speechSynthesizer.speak(spMsg, 'en-US');
+      }
       this.nextNumber = num;
       this.allDigits[this.nextNumber - 1] = { 'id': this.nextNumber, 'selected': true };
     });
+  }
+
+  parap(num) {
+    var msg;
+    var one = Math.floor(num / 10);
+    var two = num % 10;
+    if(one === 0) {
+      msg = 'only number ' + this.now(two);
+    } else {
+      msg = this.now(one) + ' ' + this.now(two) + ' ' + num;
+    }
+    return msg;
+  }
+
+  now(no) {
+    switch(no) {
+      case 1: return "one";
+      case 2: return "two";
+      case 3: return "three";
+      case 4: return "four";
+      case 5: return "five";
+      case 6: return "six";
+      case 7: return "seven";
+      case 8: return "eight";
+      case 9: return "nine";
+      case 0: return "zero";
+    }
   }
 
   reset(): void {
