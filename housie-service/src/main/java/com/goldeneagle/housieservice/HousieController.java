@@ -14,37 +14,34 @@ import java.util.List;
 @RequestMapping("/housie")
 public class HousieController {
 
-    public static final String localServer = "http://localhost:4200";
-    public static final String remoteServer = "https://housie-app-c2e99.web.app";
-
     @Autowired
     Generator generator;
 
-    @CrossOrigin(origins = {localServer, remoteServer})
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
     @RequestMapping(value = "/previous", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Integer getPrevious() {
         return generator.getPrevious();
     }
 
-    @CrossOrigin(origins = {localServer, remoteServer})
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
     @RequestMapping(value = "/current", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Integer getCurrent() {
         return generator.getCurrent();
     }
 
-    @CrossOrigin(origins = {localServer, remoteServer})
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Integer getNext() {
         return generator.getNext();
     }
 
-    @CrossOrigin(origins = {localServer, remoteServer})
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Integer> getAll() {
         return generator.getAll();
     }
 
-    @CrossOrigin(origins = {localServer, remoteServer})
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
     @RequestMapping(value = "/reset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public void reset(HttpServletRequest request) {
         if(request!=null) {
@@ -53,7 +50,7 @@ public class HousieController {
         generator.reset();
     }
 
-    @CrossOrigin(origins = {localServer, remoteServer})
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
     @RequestMapping(value = "/ticket", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Integer> ticket() {
         return generator.myTicket();

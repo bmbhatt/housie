@@ -1,5 +1,6 @@
 package com.goldeneagle.housieservice.websocket;
 
+import com.goldeneagle.housieservice.Constants;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -18,6 +19,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/housie/gs-guide-websocket").setAllowedOrigins("http://localhost:4200", "https://housie-app-c2e99.web.app").withSockJS();
+        registry.addEndpoint("/housie/gs-guide-websocket")
+                .setAllowedOrigins(Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER)
+                .withSockJS();
     }
 }
