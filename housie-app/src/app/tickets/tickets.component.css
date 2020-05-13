@@ -1,3 +1,11 @@
 table {
     width: 100%;
-  }
+}
+td {
+  border : lightgray;
+  border-style : inset;
+}
+.my {
+  text-align: center;
+  font-size: large;
+}
