@@ -1,8 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Store, select } from '@ngrx/store';
 import { ApiService } from '../api.service';
+import { State, getActiveGameId } from '../application.state';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
-import { WebSocketAPI } from '../WebSocketAPI';
 import { SpeechSynthesizerService } from '../speech-synthesizer.service';
+import { WebSocketAPI } from '../WebSocketAPI';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-board',
@@ -18,18 +22,22 @@ export class BoardComponent implements OnInit, OnDestroy {
   start: any;
   allNumbers = [];
   allDigits = new Array(90);
+  initialGameId: Number = 1;
+  activeGameId: Observable<Number> = this._store.pipe(select(getActiveGameId), distinctUntilChanged());
 
   webSocketAPI: WebSocketAPI;
 
   constructor(private apiService: ApiService,
     private confirmationDialogService: ConfirmationDialogService,
-    private speechSynthesizer: SpeechSynthesizerService) {
+    private speechSynthesizer: SpeechSynthesizerService,
+    private _store: Store<State>) {
     this.initAllDigits();
   }
 
   ngOnInit(): void {
-    this.pending=true;
-    this.webSocketAPI = new WebSocketAPI(this);
+    this.pending = true;
+    this.webSocketAPI = new WebSocketAPI(this, this.initialGameId, this._store);
+    
     this.getall();
   }
 
@@ -38,7 +46,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   mute() {
-    if(this.muted)
+    if (this.muted)
       this.muted = false;
     else
       this.muted = true;
@@ -65,7 +73,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.previousNumber = this.nextNumber;
     this.apiService.getNewNumber().subscribe((num: any) => {
       console.log("number retrieved = " + num);
-      if(!this.muted) {
+      if (!this.muted) {
         var spMsg = this.parap(num);
         this.speechSynthesizer.speak(spMsg, 'en-US');
       }
@@ -78,7 +86,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     var msg;
     var one = Math.floor(num / 10);
     var two = num % 10;
-    if(one === 0) {
+    if (one === 0) {
       msg = 'only number ' + this.now(two);
     } else {
       msg = this.now(one) + ' ' + this.now(two) + ' ' + num;
@@ -87,7 +95,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   now(no) {
-    switch(no) {
+    switch (no) {
       case 1: return "one";
       case 2: return "two";
       case 3: return "three";
@@ -118,7 +126,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   currentNum(): void {
     this.apiService.current().subscribe((num: any) => {
       this.nextNumber = num;
-      console.log("Current no ...."+num);
+      console.log("Current no ...." + num);
       this.allDigits[this.nextNumber - 1] = { 'id': this.nextNumber, 'selected': true };
     });
   }
@@ -131,45 +139,45 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   openConfirmationDialog() {
     this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to Restart ?')
-    .then((confirmed) => {
-      console.log('User confirmed:', confirmed);
-      if(confirmed)
-        this.reset();
-    }).catch(() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)'));
+      .then((confirmed) => {
+        console.log('User confirmed:', confirmed);
+        if (confirmed)
+          this.reset();
+      }).catch(() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)'));
   }
 
   /*
   WebSocket Functions
   */
 
-connect(){
-  this.webSocketAPI._connect();
-}
+  connect() {
+    this.webSocketAPI._connect();
+  }
 
-disconnect(){
-  this.webSocketAPI._disconnect();
-}
+  disconnect() {
+    this.webSocketAPI._disconnect();
+  }
 
-wsAskForNextNumber(){
-  this.webSocketAPI._send("");
-}
+  wsAskForNextNumber() {
+    this.webSocketAPI._send("");
+  }
 
-wsProcessNextNumberResponse(message){
-    if(!this.muted) {
+  wsProcessNextNumberResponse(message) {
+    if (!this.muted) {
       var spMsg = this.parap(message);
       this.speechSynthesizer.speak(spMsg, 'en-US');
     }
     this.previousNumber = this.nextNumber;
     this.nextNumber = message;
     this.allDigits[this.nextNumber - 1] = { 'id': this.nextNumber, 'selected': true };
-}
-
-markPending(pend) {
-  if(!pend) {
-    this.previousNum();
-    this.currentNum();
-    this.fetchAll();
   }
-  this.pending=pend;
-}
+
+  markPending(pend) {
+    if (!pend) {
+      this.previousNum();
+      this.currentNum();
+      this.fetchAll();
+    }
+    this.pending = pend;
+  }
 }

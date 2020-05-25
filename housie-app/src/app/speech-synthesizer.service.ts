@@ -16,8 +16,8 @@ export class SpeechSynthesizerService {
     this.message.rate = 1;
     this.message.pitch = 0.2;
     let s = this.setSpeech();
-    s.then((voices) => {this.message.voice = voices[1];
-      console.log("b."+this.message.voice.name);
+    s.then((voices) => {
+      this.message.voice = voices[1];
     });
   }
 

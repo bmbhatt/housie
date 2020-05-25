@@ -1,19 +1,24 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { throwError, Observable, merge } from 'rxjs';
-import { map, catchError, startWith } from 'rxjs/operators';
-import { switchMap } from 'rxjs/operators';
-import { MatTableDataSource } from '@angular/material/table';
-import { of } from 'rxjs';
-import { TicketRow } from './tickets/tickets.component';
+import { Injectable } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+import { merge, Observable, of, throwError } from 'rxjs';
+import { catchError, map, startWith, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { AppConstants } from './AppConstants';
+import { State, getActiveGameId } from './application.state';
+import { TicketRow } from './tickets/tickets.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
+  activeGameId: Observable<Number> = this._store.pipe(select(getActiveGameId), distinctUntilChanged());
+  currentGame: Number = 1;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private _store: Store<State>) { 
+    this.activeGameId.subscribe((activeId)=>{
+      this.currentGame = activeId;
+    });
+  }
 
   handleError(error: HttpErrorResponse) {
     
@@ -34,23 +39,23 @@ export class ApiService {
   }
 
   public getNewNumber() {
-    return this.httpClient.get(AppConstants.REAL_SERVER_URL);
+    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/"+this.currentGame);
   }
 
   public getAll() {
-    return this.httpClient.get(AppConstants.REAL_SERVER_URL + "/all");
+    return this.httpClient.get(AppConstants.REAL_SERVER_URL +"/"+this.currentGame+ "/all");
   }
 
   public reset() {
-    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/reset");
+    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/"+this.currentGame+"/reset");
   }
 
   public previous() {
-    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/previous");
+    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/"+this.currentGame+"/previous");
   }
 
   public current() {
-    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/current");
+    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/"+this.currentGame+"/current");
   }
 
   public tickets() {
@@ -86,6 +91,18 @@ export class ApiService {
           dataSource.data = allTicketNos;
         });
     
+  }
+
+  public newGame() {
+    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/newgame");
+  }
+
+  public getAllGames() {
+    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/getallgames");
+  }
+
+  public finishGame() {
+    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/finishgame");
   }
 
 }
