@@ -1,13 +1,17 @@
-import * as SockJS from 'sockjs-client';
-import * as Stomp from 'stompjs';
-import { AppConstants } from './AppConstants';
-import { BoardComponent } from './board/board.component';
-import { Store, select } from '@ngrx/store';
-import { State, getActiveGameId } from './application.state';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
+import * as SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
+import { ChangePendingAction, WSNextActionSuccessAction } from './actions/board.actions';
+import { AppConstants } from './AppConstants';
+import { getActiveGameId, State } from './application.state';
+import { Injectable } from '@angular/core';
 
 
+@Injectable({
+    providedIn: 'root'
+})
 export class WebSocketAPI {
     webSocketEndPoint: string = AppConstants.REAL_SERVER_URL + "/gs-guide-websocket";
     gameId: string;
@@ -18,14 +22,12 @@ export class WebSocketAPI {
     sadd2: string = "/next"
     serverAddr: string;
     stompClient: any;
-    boardComponent: BoardComponent;
     activeGameId: Observable<Number> = this._store.pipe(select(getActiveGameId), distinctUntilChanged());
     currentGame: Number;
 
-    constructor(boardComponent: BoardComponent, private initialGameId: Number, private _store: Store<State>) {
-        this.boardComponent = boardComponent;
-        this.currentGame = initialGameId;
-        this.activeGameId.subscribe((activeGameId)=>{
+    constructor(private _store: Store<State>) {
+        this.currentGame = 1;
+        this.activeGameId.subscribe((activeGameId) => {
             this.currentGame = activeGameId;
             console.log("state changed....." + this.currentGame);
             this.changeGameId();
@@ -41,9 +43,9 @@ export class WebSocketAPI {
             this.successCallback();
         }, () => {
             this.reconnect(this.webSocketEndPoint, this.successCallback);
-          });
+        });
     }
-    
+
     successCallback() {
         console.log("Connected.....");
         this.markPending(false);
@@ -62,7 +64,7 @@ export class WebSocketAPI {
     }
 
     _disconnect() {
-        if(this.stompClient != null) {
+        if (this.stompClient != null) {
             this.stompClient.disconnect();
         }
         console.log("Disconnect");
@@ -71,17 +73,17 @@ export class WebSocketAPI {
     reconnect(socketUrl, successCallback) {
         let connected = false;
         let reconInv = setInterval(() => {
-          let ws = new SockJS(this.webSocketEndPoint);
-          this.stompClient = Stomp.over(ws);
-          this.stompClient.connect({}, (frame) => {
-            clearInterval(reconInv);
-            connected = true;
-            successCallback();
-          }, () => {
-            if (connected) {
-              this.reconnect(socketUrl, successCallback);
-            }
-          });
+            let ws = new SockJS(this.webSocketEndPoint);
+            this.stompClient = Stomp.over(ws);
+            this.stompClient.connect({}, (frame) => {
+                clearInterval(reconInv);
+                connected = true;
+                successCallback();
+            }, () => {
+                if (connected) {
+                    this.reconnect(socketUrl, successCallback);
+                }
+            });
         }, 10000);
     }
 
@@ -94,7 +96,7 @@ export class WebSocketAPI {
     }
 
     delay(ms: number) {
-        return new Promise( resolve => setTimeout(resolve, ms) );
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     _send(message) {
@@ -103,17 +105,18 @@ export class WebSocketAPI {
     }
 
     onMessageReceived(message) {
-        this.boardComponent.wsProcessNextNumberResponse(message.body);
+        let no = +(message.body);
+        this._store.dispatch(new WSNextActionSuccessAction(no));
     }
 
     markPending(pend) {
-        this.boardComponent.markPending(pend);
+        this._store.dispatch(new ChangePendingAction(pend));
     }
 
     changeGameId() {
         this.topic = this.topic1 + this.currentGame + this.topic2;
         this.serverAddr = this.sadd1 + this.currentGame + this.sadd2;
-        console.log("topic="+this.topic);
-        console.log("server="+this.serverAddr);
+        console.log("topic=" + this.topic);
+        console.log("server=" + this.serverAddr);
     }
 }
