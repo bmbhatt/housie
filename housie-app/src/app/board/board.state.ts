@@ -6,7 +6,7 @@ export class BoardState {
         previousNumber: 0,
         allDigits: [],
         pending: true,
-        muted: false
+        muted: true
     });
     nextNumber: Number;
     previousNumber: Number;
