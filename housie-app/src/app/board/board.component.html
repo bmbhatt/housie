@@ -1,32 +1,23 @@
 <div style="padding: 13px;">
-    <mat-spinner *ngIf="pending"></mat-spinner>
+    <mat-spinner *ngIf="pending | async"></mat-spinner>
     <mat-card >
         <mat-card-content>
-            <p class="mat-display-3" *ngIf='nextNumber == -999'>
-                Connecting.....
-            </p>
-            <p class="mat-display-4" *ngIf='nextNumber > 0'>
-                {{nextNumber}}
-            </p>
-            <p class="mat-display-3" *ngIf='nextNumber == -1'>
-                Done!
-            </p>
-            <p class="mat-display-3" *ngIf='nextNumber == 0'>
-                Ready
+            <p class="mat-display-4" *ngIf='nextNumber | async'>
+                {{nextNumber | async}}
             </p>
         </mat-card-content>
         <mat-card-actions>
-            <button (click)="wsAskForNextNumber()" mat-raised-button color="primary" *ngIf="!pending">Next Number</button>
-            <button mat-button>Previous : {{previousNumber}}</button>
+            <button (click)="wsAskForNextNumber()" mat-raised-button color="primary" *ngIf="!(pending | async)">Next Number</button>
+            <button mat-button>Previous : {{previousNumber | async}}</button>
             <button (click)="mute()" mat-button mat-raised-button>
-                <mat-icon *ngIf='muted'>volume_off</mat-icon>
-                <mat-icon *ngIf='!muted'>volume_up</mat-icon>
+                <mat-icon *ngIf='muted | async'>volume_off</mat-icon>
+                <mat-icon *ngIf='!(muted | async)'>volume_up</mat-icon>
             </button>
         </mat-card-actions>
     </mat-card>
-    <mat-card style="margin-top:10px;">
+    <mat-card style="margin-top:10px;" *ngIf='allDigits | async'>
         <mat-grid-list cols="10" rowHeight="fit" style="height: 300px;" gutterSize="3px">
-            <mat-grid-tile *ngFor='let num of allDigits' [ngStyle]="{'background-color': num.selected === true ? 'gray' : 'lightgray'}">
+            <mat-grid-tile *ngFor='let num of allDigits | async' [ngStyle]="{'background-color': num.noSelected === true ? 'gray' : 'lightgray'}">
                 {{num.id}}
             </mat-grid-tile>
         </mat-grid-list>

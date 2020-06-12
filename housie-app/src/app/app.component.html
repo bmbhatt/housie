@@ -1,10 +1,21 @@
-<mat-toolbar color="primary">  
- 
+<mat-toolbar color="primary">
+  <mat-form-field *ngIf="allGames">
+    <mat-select (selectionChange)='changeGame($event.value)' [(value)]="gameId">
+      <mat-option *ngFor="let game of allGames | async" [value]="game.gameId">
+        G - {{ game.gameId }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
   <!--<button mat-button routerLink="/">Home</button>  -->
-  <button mat-button routerLink="/board">AFB</button>
-  <button mat-button routerLink="/stboard">STB</button>
+  <button mat-button routerLink="/board">Board</button>
+  <!--<button mat-button routerLink="/stboard">STB</button>-->
   <button mat-button routerLink="/tickets">Tickets</button>
   <button mat-button routerLink="/about">Info</button>
   <!--<button mat-button routerLink="/home">Sample</button>-->
+  <span class="fx-spacer"></span>
+  <button mat-button (click)='newGame()'>New Game</button>
+  <!-- <button mat-button *ngIf='activeGameId | async'>Game {{activeGameId | async}} is On</button> -->
+
 </mat-toolbar>
 <router-outlet></router-outlet>

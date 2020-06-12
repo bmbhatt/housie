@@ -19,7 +19,7 @@ class TestingWebApplicationTest {
 	MockMvc mockMvc;
 
 	public void testGetNext() throws Exception {
-		this.mockMvc.perform(get("/housie")).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("1")));
+		this.mockMvc.perform(get("/housie/1")).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("1")));
 	}
 
 }

@@ -2,10 +2,7 @@ package com.goldeneagle.housieservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -15,45 +12,62 @@ import java.util.List;
 public class HousieController {
 
     @Autowired
-    Generator generator;
+    Games games;
 
     @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
-    @RequestMapping(value = "/previous", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Integer getPrevious() {
-        return generator.getPrevious();
+    @RequestMapping(value = "/{id}/previous", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Integer getPrevious(@PathVariable("id") Integer id) {
+        return games.getPrevious(id);
     }
 
     @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
-    @RequestMapping(value = "/current", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Integer getCurrent() {
-        return generator.getCurrent();
+    @RequestMapping(value = "/{id}/current", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Integer getCurrent(@PathVariable("id") Integer id) {
+        return games.getCurrent(id);
     }
 
     @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Integer getNext() {
-        return generator.getNext();
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Integer getNext(@PathVariable("id") Integer id) {
+        return games.getNext(id);
     }
 
     @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
-    @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Integer> getAll() {
-        return generator.getAll();
+    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Integer> getAll(@PathVariable("id") Integer id) {
+        return games.getAll(id);
     }
 
     @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
-    @RequestMapping(value = "/reset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void reset(HttpServletRequest request) {
-        if(request!=null) {
+    @RequestMapping(value = "/{id}/reset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void reset(@PathVariable("id") Integer id, HttpServletRequest request) {
+        if (request != null) {
             System.out.println("Reset performed by IP Address : " + request.getRemoteAddr());
         }
-        generator.reset();
+        games.reset(id);
     }
 
     @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
     @RequestMapping(value = "/ticket", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Integer> ticket() {
-        return generator.myTicket();
+        return games.myTicket();
     }
 
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @RequestMapping(value = "/newgame", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Integer newGame() {
+        return games.newGame();
+    }
+
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @RequestMapping(value = "/{id}/finishgame", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void finishGame(@PathVariable("id") Integer id) {
+        games.finishGame(id);
+    }
+
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @RequestMapping(value = "/getallgames", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Integer> getAllGames() {
+        return games.getAllGames();
+    }
 }

@@ -4,43 +4,36 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-public class Generator {
+public class Games {
+    Map<Integer, GamerImpl> gamesM;
 
-    int length = 91;
-    public List<Integer> list = new ArrayList<>();
-    int current = 0;
-    int previous = 0;
-
-    private Random random = new Random();
-
-    public Generator() {
-        System.out.println(".................Generator Constructor called.................");
+    public Games() {
+        gamesM = new HashMap<>();
     }
 
-    public int getNext() {
-        if(list.size() < (length - 1)) {
-            int next = random.nextInt(length);
-            while(list.contains(next) || next == 0) {
-                next = random.nextInt(length);
-            }
-            list.add(next);
-            previous = current;
-            current = next;
-            return next;
-        }
-        return -1;
+    public Games(Integer gameId) {
+        gamesM = new HashMap<>();
+        gamesM.put(gameId, new GamerImpl());
     }
 
-    public List<Integer> getAll() {
-        List<Integer> revList = new ArrayList<>(list);
-        Collections.reverse(revList);
-        return revList;
+    public int getNext(Integer gameId) {
+        return gamesM.get(gameId).getNext();
     }
 
-    public void reset() {
-        list = new ArrayList<>();
-        current = 0;
-        previous = 0;
+    public List<Integer> getAll(Integer gameId) {
+        return gamesM.get(gameId).getAll();
+    }
+
+    public int getCurrent(Integer gameId) {
+        return gamesM.get(gameId).getCurrent();
+    }
+
+    public int getPrevious(Integer gameId) {
+        return gamesM.get(gameId).getPrevious();
+    }
+
+    public void reset(Integer gameId) {
+        gamesM.get(gameId).reset();
     }
 
     public List<Integer> myTicket() {
@@ -49,11 +42,29 @@ public class Generator {
         return Arrays.stream(finalTickets).boxed().collect(Collectors.toList());
     }
 
+    private int[] generateTickets() {
+        int[] ticket = new int[27];
+        int cSingle = 0;
+        int cDouble = 0;
+        for (int i = 0; i < 9; i++) {
+            int count = 2;
+            boolean one = (ThreadLocalRandom.current().nextInt(1, 3) % 2 != 0 && cSingle < 3) || cDouble > 5;
+            if (one) {
+                count = 1;
+                cSingle++;
+            } else {
+                cDouble++;
+            }
+            generateAndPopulate(ticket, i, count);
+        }
+        return arrange(ticket);
+    }
+
     private int[] checkAndFix(int[] ticket) {
         int[] newTickets = ticket.clone();
         boolean regen = true;
 
-        while(regen) {
+        while (regen) {
             regen = false;
             int count1 = 0;
             int count2 = 0;
@@ -72,25 +83,7 @@ public class Generator {
             }
         }
 
-        return  newTickets;
-    }
-
-    private int[] generateTickets() {
-        int[] ticket = new int[27];
-        int cSingle = 0;
-        int cDouble = 0;
-        for (int i = 0; i < 9; i++) {
-            int count = 2;
-            boolean one = (ThreadLocalRandom.current().nextInt(1, 3) % 2 != 0 && cSingle < 3) || cDouble > 5;
-            if(one) {
-                count = 1;
-                cSingle++;
-            } else {
-                cDouble++;
-            }
-            generateAndPopulate(ticket, i, count);
-        }
-        return arrange(ticket);
+        return newTickets;
     }
 
     private int[] arrange(int[] ticket) {
@@ -99,8 +92,8 @@ public class Generator {
         int j = ci;
         for (int i = 0; i < ticket.length; i++) {
             newArray[j] = ticket[i];
-            j = j+9;
-            if(j >= 27) {
+            j = j + 9;
+            if (j >= 27) {
                 ci++;
                 j = ci;
             }
@@ -114,11 +107,11 @@ public class Generator {
         int previous = 0;
         int current = -1;
         int currentIndex = -1;
-        while(count > 0) {
-            while(current <= previous) {
+        while (count > 0) {
+            while (current <= previous) {
                 current = ThreadLocalRandom.current().nextInt(i * 10, i * 10 + (10 - count + 1));
             }
-            while(currentIndex <= previousIndex) {
+            while (currentIndex <= previousIndex) {
                 currentIndex = ThreadLocalRandom.current().nextInt(i * 3, i * 3 + (3 - count + 1));
             }
             ticket[currentIndex] = current;
@@ -128,25 +121,20 @@ public class Generator {
         }
     }
 
-
-    public int getLength() {
-        return length;
+    public Integer newGame() {
+        Integer gameId = 1;
+        while(gamesM.get(gameId) != null) {
+            gameId++;
+        }
+        gamesM.put(gameId, new GamerImpl());
+        return gameId;
     }
 
-    public List<Integer> getList() {
-        return list;
+    public void finishGame(Integer gameId) {
+        gamesM.remove(gameId);
     }
 
-    public int getCurrent() {
-        return current;
+    public List<Integer> getAllGames() {
+        return gamesM.keySet().stream().collect(Collectors.toList());
     }
-
-    public int getPrevious() {
-        return previous;
-    }
-
-    public Random getRandom() {
-        return random;
-    }
-
 }

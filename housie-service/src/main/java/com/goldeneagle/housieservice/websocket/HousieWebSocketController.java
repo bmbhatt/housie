@@ -1,20 +1,28 @@
 package com.goldeneagle.housieservice.websocket;
 
-import com.goldeneagle.housieservice.Generator;
+import com.goldeneagle.housieservice.Games;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class HousieWebSocketController {
 
     @Autowired
-    Generator generator;
+    Games games;
 
-    @MessageMapping("/next")
-    @SendTo("/topic/newNumber")
-    public Integer getNext() {
-        return generator.getNext();
+    @Autowired
+    SimpMessagingTemplate simpMessagingTemplate;
+
+    @MessageMapping("/{id}/next")
+//    @SendTo("/topic/{id}/newNumber")
+    public void getNext(@DestinationVariable String id) {
+        System.out.println("getNext .... called for id = " + id);
+        String dest = "/topic/" + id + "/newNumber";
+        simpMessagingTemplate.convertAndSend(dest, games.getNext(Integer.parseInt(id)));
+//        return games.getNext(Integer.parseInt(id));
     }
 }

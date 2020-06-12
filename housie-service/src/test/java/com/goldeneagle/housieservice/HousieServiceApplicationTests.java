@@ -31,7 +31,7 @@ class HousieServiceApplicationTests {
 
 	@Test
 	public void testGetNext() {
-		assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/housie", Integer.class)).isBetween(1, 90);
+		assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/housie/1", Integer.class)).isBetween(1, 90);
 	}
 
 	@Test
@@ -39,7 +39,7 @@ class HousieServiceApplicationTests {
 		Map<Integer, Integer> all = new HashMap<>();
 
 		for(int i = 1; i < 91; i++) {
-			Integer nextInt = this.restTemplate.getForObject("http://localhost:" + port + "/housie", Integer.class);
+			Integer nextInt = this.restTemplate.getForObject("http://localhost:" + port + "/housie/1", Integer.class);
 			assertThat(all.get(nextInt)).isNull();
 			all.put(nextInt, 1);
 		}
