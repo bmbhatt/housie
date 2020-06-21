@@ -32,6 +32,10 @@ public class Games {
         return gamesM.get(gameId).getPrevious();
     }
 
+    public boolean getIfBoardIsReset(Integer gameId) {
+        return gamesM.get(gameId).getIfBoardIsReset();
+    }
+
     public void reset(Integer gameId) {
         gamesM.get(gameId).reset();
     }
@@ -44,16 +48,45 @@ public class Games {
 
     private int[] generateTickets() {
         int[] ticket = new int[27];
-        int cSingle = 0;
-        int cDouble = 0;
+        int cSingle;
+        int cDouble;
+        int cTriple;
+        if(ThreadLocalRandom.current().nextInt(1, 3) == 1) {
+            cSingle = 4;
+            cDouble = 4;
+            cTriple = 1;
+        } else {
+            cSingle = 3;
+            cDouble = 6;
+            cTriple = 0;
+        }
         for (int i = 0; i < 9; i++) {
-            int count = 2;
-            boolean one = (ThreadLocalRandom.current().nextInt(1, 3) % 2 != 0 && cSingle < 3) || cDouble > 5;
-            if (one) {
-                count = 1;
-                cSingle++;
-            } else {
-                cDouble++;
+            int count = 0;
+            int generate = ThreadLocalRandom.current().nextInt(1, 4);
+            if(generate == 3) {
+                if(cTriple > 0) {
+                    count = 3;
+                    cTriple--;
+                } else {
+                    generate = ThreadLocalRandom.current().nextInt(1, 3);
+                }
+            }
+            if(generate == 2) {
+                if(cDouble > 0) {
+                    count = 2;
+                    cDouble--;
+                } else {
+                    generate = 1;
+                }
+            }
+            if(generate == 1) {
+                if(cSingle > 0) {
+                    count = 1;
+                    cSingle--;
+                } else {
+                    count = 2;
+                    cDouble--;
+                }
             }
             generateAndPopulate(ticket, i, count);
         }
@@ -123,7 +156,7 @@ public class Games {
 
     public Integer newGame() {
         Integer gameId = 1;
-        while(gamesM.get(gameId) != null) {
+        while (gamesM.get(gameId) != null) {
             gameId++;
         }
         gamesM.put(gameId, new GamerImpl());

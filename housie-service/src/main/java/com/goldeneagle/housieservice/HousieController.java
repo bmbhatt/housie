@@ -27,6 +27,12 @@ public class HousieController {
     }
 
     @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @RequestMapping(value = "/{id}/ifBoardReset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Boolean getIfBoardIsReset(@PathVariable("id") Integer id) {
+        return games.getIfBoardIsReset(id);
+    }
+
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Integer getNext(@PathVariable("id") Integer id) {
         return games.getNext(id);

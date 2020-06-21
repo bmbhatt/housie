@@ -10,6 +10,7 @@ public class GamerImpl implements Gamer {
     public List<Integer> list = new ArrayList<>();
     int current = 0;
     int previous = 0;
+    boolean boardReset = Boolean.FALSE;
 
     private Random random = new Random();
 
@@ -19,6 +20,7 @@ public class GamerImpl implements Gamer {
 
     @Override
     public int getNext() {
+        boardReset = Boolean.FALSE;
         if (list.size() < (length - 1)) {
             int next = random.nextInt(length);
             while (list.contains(next) || next == 0) {
@@ -44,6 +46,7 @@ public class GamerImpl implements Gamer {
         list = new ArrayList<>();
         current = 0;
         previous = 0;
+        boardReset = Boolean.TRUE;
     }
 
     public int getLength() {
@@ -62,6 +65,11 @@ public class GamerImpl implements Gamer {
     @Override
     public int getPrevious() {
         return previous;
+    }
+
+    @Override
+    public boolean getIfBoardIsReset() {
+        return boardReset;
     }
 
     public Random getRandom() {
