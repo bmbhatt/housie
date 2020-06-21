@@ -62,6 +62,10 @@ export class ApiService {
     return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/ticket");
   }
 
+  public checkIfBoardIsReset() {
+    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/"+this.currentGame+"/ifBoardReset");
+  }
+
   public generateTicket(dataSource) {
     merge().pipe(startWith({}),
           switchMap(()=>{

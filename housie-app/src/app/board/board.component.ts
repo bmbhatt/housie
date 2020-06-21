@@ -1,13 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { Observable, timer } from 'rxjs';
+import { distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { ResetBoardAction, SwapMuteAction, WSNextAction } from '../actions/board.actions';
 import { ApiService } from '../api.service';
 import { getActiveGameId, getAllDigits, getMuted, getNextNumber, getPending, getPreviousNumber, State } from '../application.state';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
 import { BoardModel } from '../models/game.model';
 import { WebSocketAPI } from '../WebSocketAPI';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-board',
@@ -24,14 +25,22 @@ export class BoardComponent implements OnInit, OnDestroy {
   allNumbers = [];
   allDigits: Observable<BoardModel[]> = this._store.pipe(select(getAllDigits), distinctUntilChanged());
   activeGameId: Observable<Number> = this._store.pipe(select(getActiveGameId), distinctUntilChanged());
+  subscription; Subscription;
 
   constructor(private apiService: ApiService,
     private confirmationDialogService: ConfirmationDialogService,
     private webSocketAPI: WebSocketAPI,
-    private _store: Store<State>) {
+    private _store: Store<State>,
+    private location: Location) {
   }
 
   ngOnInit(): void {
+    this.subscription = timer(10000, 10000).pipe(
+      switchMap(() => this.apiService.checkIfBoardIsReset())
+    ).subscribe((gameReset: boolean) => {
+      if(gameReset)
+        location.reload();
+    });
   }
 
   ngOnDestroy() {
@@ -41,6 +50,10 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   mute() {
     this._store.dispatch(new SwapMuteAction());
+  }
+
+  checkIfBoardIsReset(): void {
+    this.apiService.checkIfBoardIsReset();
   }
 
   reset(): void {
