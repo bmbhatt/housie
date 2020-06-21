@@ -54,6 +54,7 @@ public class Games {
         int[] ticket = new int[27];
         int cSingle = 0;
         int cDouble = 0;
+        int cTriple = 0;
         for (int i = 0; i < 9; i++) {
             int count = 2;
             boolean one = (ThreadLocalRandom.current().nextInt(1, 3) % 2 != 0 && cSingle < 3) || cDouble > 5;
@@ -61,7 +62,15 @@ public class Games {
                 count = 1;
                 cSingle++;
             } else {
-                cDouble++;
+                boolean three = ThreadLocalRandom.current().nextInt(1, 200) < 10 && cTriple < 1 && cDouble < 4;
+                if (three) {
+                    count = 3;
+                    cTriple++;
+                    cSingle--;
+                    cDouble++;
+                }
+                else
+                    cDouble++;
             }
             generateAndPopulate(ticket, i, count);
         }
@@ -88,6 +97,21 @@ public class Games {
             if (count1 < 5 || count2 < 5 || count3 < 5) {
                 regen = true;
                 newTickets = generateTickets();
+                continue;
+            }
+            int columnCount = 0;
+            for (int i = 0; i < 9; i++) {
+                columnCount = 0;
+                if (newTickets[i] > 0)
+                    columnCount++;
+                if (newTickets[i+9] > 0)
+                    columnCount++;
+                if (newTickets[i+18] > 0)
+                    columnCount++;
+                if (columnCount == 0) {
+                    regen = true;
+                    newTickets = generateTickets();
+                }
             }
         }
 
@@ -111,10 +135,10 @@ public class Games {
     }
 
     private void generateAndPopulate(int[] ticket, int i, int count) {
-        int previousIndex = 0;
-        int previous = 0;
-        int current = -1;
-        int currentIndex = -1;
+        int previousIndex = -1;
+        int previous = -1;
+        int current = -2;
+        int currentIndex = -2;
         while (count > 0) {
             while (current <= previous) {
                 current = ThreadLocalRandom.current().nextInt(i * 10, i * 10 + (10 - count + 1));
@@ -123,6 +147,7 @@ public class Games {
                 currentIndex = ThreadLocalRandom.current().nextInt(i * 3, i * 3 + (3 - count + 1));
             }
             ticket[currentIndex] = current;
+//            System.out.println("i ="+i+ ", count = "+count+"Populating number at index " + currentIndex + ", number = " + current);
             previous = current;
             previousIndex = currentIndex;
             count--;
