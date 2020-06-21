@@ -1,18 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
+import * as TicketActions from '../actions/ticket.actions';
 import { ApiService } from '../api.service';
+import { getTicketId, State, getTickets } from '../application.state';
 import { MatTableDataSource } from '@angular/material/table';
-
-export class TicketRow {
-  num1: number;
-  num2: number;
-  num3: number;
-  num4: number;
-  num5: number;
-  num6: number;
-  num7: number;
-  num8: number;
-  num9: number;
-}
+import { TicketModel } from '../models/ticket.model';
 
 @Component({
   selector: 'app-tickets',
@@ -21,38 +15,29 @@ export class TicketRow {
 })
 export class TicketsComponent implements OnInit {
 
-  allTicketNos: TicketRow[] = [new TicketRow(), new TicketRow(), new TicketRow()];
   displayedColumns: string[] = ['col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8', 'col9'];
   ticketNumbers: any;
   dataSource = new MatTableDataSource();
+  ticketId$: Observable<Number> = this._store.pipe(select(getTicketId), distinctUntilChanged());
 
-  constructor(private apiService: ApiService) {   }
+  constructor(private apiService: ApiService,
+    private _store: Store<State>) { }
 
   ngOnInit(): void {
-  }
-
-  generateTicket() {
-    this.apiService.tickets().subscribe((numbers: any) => {
-      this.ticketNumbers = numbers;
-      console.log(this.ticketNumbers);
-      for (let index = 0, c = 0; index < this.ticketNumbers.length; index+=9) {
-        this.allTicketNos[c] = { 'num1': this.ticketNumbers[index], 
-        'num2': this.ticketNumbers[index + 2],
-        'num3': this.ticketNumbers[index + 3],
-        'num4': this.ticketNumbers[index + 4],
-        'num5': this.ticketNumbers[index + 5],
-        'num6': this.ticketNumbers[index + 6],
-        'num7': this.ticketNumbers[index + 7],
-        'num8': this.ticketNumbers[index + 8],
-        'num9': this.ticketNumbers[index + 9] };
-        c++;
-      }
-      console.log(this.allTicketNos);
+    this._store.pipe(select(getTickets), distinctUntilChanged()).subscribe((data)=>{
+      if(data != null)
+        this.dataSource.data = data.data;
     });
   }
 
-  getAllRecords() {
-    this.apiService.generateTicket(this.dataSource);
+  // getAllRecords() {
+  //   this.apiService.generateTicket(this.dataSource, this.ticketId);
+  // }
+
+  genTicket() {
+    this.apiService.genTicket().subscribe((data: any) => {
+      this._store.dispatch(new TicketActions.GenerateTicketAction(data));
+    });
   }
 
 }

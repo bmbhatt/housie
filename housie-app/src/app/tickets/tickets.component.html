@@ -1,14 +1,14 @@
 <div style="padding: 13px;">
-    <mat-card >
-        <mat-card-content>
-            {{ticketNumbers}}
-        </mat-card-content>
+    <mat-card>
         <mat-card-actions>
-            <button (click)="getAllRecords()" mat-raised-button color="primary">Generate Ticket</button>
+            <button (click)="genTicket()" mat-raised-button color="primary">Generate Ticket</button>
         </mat-card-actions>
     </mat-card>
     <mat-card style="margin-top:10px;">
-        <mat-grid-list cols="3" rowHeight="fit" style="height: 150px;" gutterSize="3px">
+        <mat-card-title *ngIf="(ticketId$ | async) != 0">
+            Ticket No: {{ticketId$ | async}}
+         </mat-card-title>
+         <mat-grid-list cols="3" rowHeight="fit" style="height: 150px;" gutterSize="3px">
             <!-- <mat-grid-tile colspan="1">
                 Ticket
             </mat-grid-tile> -->

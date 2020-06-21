@@ -3,15 +3,19 @@ import { AppState } from './app.state';
 import { housieReducer } from './reducers/housie.reducer';
 import { BoardState } from './board/board.state';
 import { boardReducer } from './reducers/board.reducer';
+import { TicketState } from './tickets/ticket.state';
+import { ticketReducer } from './reducers/ticket.reducer';
 
 export interface State {
     app: AppState;
     board: BoardState;
+    ticket: TicketState;
 }
 
 export const reducers: ActionReducerMap<State> = {
     app: housieReducer,
-    board: boardReducer
+    board: boardReducer,
+    ticket: ticketReducer
 }
 
 export const getAllGames = createSelector(
@@ -47,4 +51,14 @@ export const getPending = createSelector(
 export const getMuted = createSelector(
     (state: State) => state.board,
     (state: BoardState) => state.muted
+);
+
+export const getTickets = createSelector(
+    (state: State) => state.ticket,
+    (state: TicketState) => state.tickets
+);
+
+export const getTicketId = createSelector(
+    (state: State) => state.ticket,
+    (state: TicketState) => state.ticketId
 );
