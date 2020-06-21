@@ -2,17 +2,18 @@ package com.goldeneagle.housieservice;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class Games {
-    Map<Integer, GamerImpl> gamesM;
+    Map<Integer, GamerImpl> gamesM = new HashMap<>();
+    List<Ticket> tickets = new ArrayList<>();;
+    AtomicInteger aCount = new AtomicInteger(1);
 
     public Games() {
-        gamesM = new HashMap<>();
     }
 
     public Games(Integer gameId) {
-        gamesM = new HashMap<>();
         gamesM.put(gameId, new GamerImpl());
     }
 
@@ -40,53 +41,27 @@ public class Games {
         gamesM.get(gameId).reset();
     }
 
-    public List<Integer> myTicket() {
+    public Ticket myTicket() {
         int[] ticket = generateTickets();
         int[] finalTickets = checkAndFix(ticket);
-        return Arrays.stream(finalTickets).boxed().collect(Collectors.toList());
+        List<Integer> output = Arrays.stream(finalTickets).boxed().collect(Collectors.toList());
+        Ticket t = new Ticket(aCount.getAndIncrement(), output);
+        tickets.add(t);
+        return t;
     }
 
     private int[] generateTickets() {
         int[] ticket = new int[27];
-        int cSingle;
-        int cDouble;
-        int cTriple;
-        if(ThreadLocalRandom.current().nextInt(1, 3) == 1) {
-            cSingle = 4;
-            cDouble = 4;
-            cTriple = 1;
-        } else {
-            cSingle = 3;
-            cDouble = 6;
-            cTriple = 0;
-        }
+        int cSingle = 0;
+        int cDouble = 0;
         for (int i = 0; i < 9; i++) {
-            int count = 0;
-            int generate = ThreadLocalRandom.current().nextInt(1, 4);
-            if(generate == 3) {
-                if(cTriple > 0) {
-                    count = 3;
-                    cTriple--;
-                } else {
-                    generate = ThreadLocalRandom.current().nextInt(1, 3);
-                }
-            }
-            if(generate == 2) {
-                if(cDouble > 0) {
-                    count = 2;
-                    cDouble--;
-                } else {
-                    generate = 1;
-                }
-            }
-            if(generate == 1) {
-                if(cSingle > 0) {
-                    count = 1;
-                    cSingle--;
-                } else {
-                    count = 2;
-                    cDouble--;
-                }
+            int count = 2;
+            boolean one = (ThreadLocalRandom.current().nextInt(1, 3) % 2 != 0 && cSingle < 3) || cDouble > 5;
+            if (one) {
+                count = 1;
+                cSingle++;
+            } else {
+                cDouble++;
             }
             generateAndPopulate(ticket, i, count);
         }

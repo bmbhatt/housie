@@ -48,10 +48,10 @@ class HousieServiceApplicationTests {
 
 	@Test
 	public void testTicket() {
-		List<Integer> ticket = this.restTemplate.getForObject("http://localhost:" + port + "/housie/ticket", List.class);
-		assertThat(ticket.size()).isEqualTo(27);
+		Ticket ticket = this.restTemplate.getForObject("http://localhost:" + port + "/housie/ticket", Ticket.class);
+		assertThat(ticket.getTickets().size()).isEqualTo(27);
 		int count = 0;
-		for (Integer no : ticket) {
+		for (Integer no : ticket.getTickets()) {
 			if (no != 0) count++;
 		}
 		assertThat(count).isEqualTo(15);

@@ -55,7 +55,7 @@ public class HousieController {
 
     @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
     @RequestMapping(value = "/ticket", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Integer> ticket() {
+    public Ticket ticket() {
         return games.myTicket();
     }
 
