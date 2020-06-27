@@ -53,7 +53,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   checkIfBoardIsReset(): void {
-    this.apiService.checkIfBoardIsReset();
+    //this.apiService.checkIfBoardIsReset();
   }
 
   reset(): void {
