@@ -96,7 +96,7 @@ public class Games {
                 if (i >= 18 && newTickets[i] > 0)
                     count3++;
             }
-            if (count1 < 5 || count2 < 5 || count3 < 5) {
+            if (count1 != 5 || count2 != 5 || count3 != 5) {
                 regen = true;
                 newTickets = generateTickets();
                 continue;
