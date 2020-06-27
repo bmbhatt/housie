@@ -28,6 +28,11 @@ export const getActiveGameId = createSelector(
     (state: AppState) => state.activeGameId
 );
 
+export const getCheatTicketNo = createSelector(
+    (state: State) => state.app,
+    (state: AppState) => state.cheatTicketNo
+);
+
 export const getAllDigits = createSelector(
     (state: State) => state.board,
     (state: BoardState) => state.allDigits

@@ -69,6 +69,10 @@ export class ApiService {
     return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/ticket");
   }
 
+  public getCheatTicketNo() {
+    return this.httpClient.get(AppConstants.REAL_SERVER_URL+"/"+this.currentGame+"/getCheat");
+  }
+
   // public generateTicket(dataSource, ticketId) {
   //   merge().pipe(startWith({}),
   //         switchMap(()=>{

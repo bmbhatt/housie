@@ -44,8 +44,8 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log("ondestroy called.");
-    this.webSocketAPI._disconnect();
+    // console.log("ondestroy called.");
+    // this.webSocketAPI._disconnect();
   }
 
   mute() {

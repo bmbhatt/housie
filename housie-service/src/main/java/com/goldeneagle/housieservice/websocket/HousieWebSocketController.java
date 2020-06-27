@@ -25,4 +25,13 @@ public class HousieWebSocketController {
         simpMessagingTemplate.convertAndSend(dest, games.getNext(Integer.parseInt(id)));
 //        return games.getNext(Integer.parseInt(id));
     }
+
+    @MessageMapping("/{id}/getwscheat/{ticketno}")
+//    @SendTo("/topic/{id}/newNumber")
+    public void getCheatTicketNo(@DestinationVariable Integer id, @DestinationVariable Integer ticketno) {
+        System.out.println("cheat .... called for id = " + id + ", ticket no=" + ticketno);
+        String dest = "/topic/" + id + "/cheatTicketNo";
+        simpMessagingTemplate.convertAndSend(dest, games.getCheat(id));
+    }
+
 }

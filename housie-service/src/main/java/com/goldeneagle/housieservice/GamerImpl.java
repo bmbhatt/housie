@@ -10,6 +10,7 @@ public class GamerImpl implements Gamer {
     public List<Integer> list = new ArrayList<>();
     int current = 0;
     int previous = 0;
+    int cheatTicketNo = 0;
     boolean boardReset = Boolean.FALSE;
 
     private Random random = new Random();
@@ -76,4 +77,13 @@ public class GamerImpl implements Gamer {
         return random;
     }
 
+    @Override
+    public void setCheatTicketNo(Integer ticketNo) {
+        cheatTicketNo = ticketNo;
+    }
+
+    @Override
+    public Integer getCheatTicketNo() {
+        return cheatTicketNo;
+    }
 }

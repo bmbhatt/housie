@@ -14,4 +14,8 @@ public interface Gamer {
         int getPrevious();
 
         boolean getIfBoardIsReset();
+
+        public void setCheatTicketNo(Integer ticketNo);
+
+        public Integer getCheatTicketNo();
 }

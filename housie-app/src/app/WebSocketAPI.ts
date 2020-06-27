@@ -7,6 +7,7 @@ import { ChangePendingAction, WSNextActionSuccessAction } from './actions/board.
 import { AppConstants } from './AppConstants';
 import { getActiveGameId, State } from './application.state';
 import { Injectable } from '@angular/core';
+import { WSGotCheatNoActionSuccessAction } from './actions/housie.actions';
 
 
 @Injectable({
@@ -18,9 +19,15 @@ export class WebSocketAPI {
     topic1: string = "/topic/";
     topic2: string = "/newNumber";
     topic: string;
-    sadd1: string = "/housie/";
-    sadd2: string = "/next"
+    housieRoot: string = "/housie/";
+    sadd2: string = "/next";
+
+    getcheat: string = "/getwscheat";
+    cheat1: string = "/topic/";
+    cheat2: string = "/cheatTicketNo";
+    cheatAddrWhereServerWillSendResponse: string;
     serverAddr: string;
+    cheatCallingServerAddress: string;
     stompClient: any;
     activeGameId: Observable<Number> = this._store.pipe(select(getActiveGameId), distinctUntilChanged());
     currentGame: Number;
@@ -56,6 +63,9 @@ export class WebSocketAPI {
         const _this = this;
         _this.stompClient.subscribe(_this.topic, function (sdkEvent) {
             _this.onMessageReceived(sdkEvent);
+        });
+        _this.stompClient.subscribe(_this.cheatAddrWhereServerWillSendResponse, function (sdkEvent) {
+            _this.onMessageReceivedForCheatTicketNo(sdkEvent);
         });
     }
 
@@ -109,14 +119,28 @@ export class WebSocketAPI {
         this._store.dispatch(new WSNextActionSuccessAction(no));
     }
 
+    _sendForCheatTicketNo(message) {
+        console.log("calling cheat via web socket");
+        this.stompClient.send(this.cheatCallingServerAddress, {}, JSON.stringify(message));
+    }
+
+    onMessageReceivedForCheatTicketNo(message) {
+        let no = +(message.body);
+        this._store.dispatch(new WSGotCheatNoActionSuccessAction(no));
+    }
+
     markPending(pend) {
         this._store.dispatch(new ChangePendingAction(pend));
     }
 
     changeGameId() {
         this.topic = this.topic1 + this.currentGame + this.topic2;
-        this.serverAddr = this.sadd1 + this.currentGame + this.sadd2;
+        this.serverAddr = this.housieRoot + this.currentGame + this.sadd2;
+        this.cheatCallingServerAddress = this.housieRoot + this.currentGame + this.getcheat;
+        this.cheatAddrWhereServerWillSendResponse = this.cheat1 + this.currentGame + this.cheat2;
         console.log("topic=" + this.topic);
         console.log("server=" + this.serverAddr);
+        console.log("cheatAddrWhereServerWillSendResponse=" + this.cheatAddrWhereServerWillSendResponse);
+        console.log("cheatCallingServerAddress=" + this.cheatCallingServerAddress);
     }
 }

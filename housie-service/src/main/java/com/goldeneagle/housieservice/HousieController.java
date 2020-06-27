@@ -2,6 +2,7 @@ package com.goldeneagle.housieservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -76,4 +77,22 @@ public class HousieController {
     public List<Integer> getAllGames() {
         return games.getAllGames();
     }
+
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @RequestMapping(value = "/{id}/cheat/{ticketno}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void cheatTicketNo(@PathVariable("id") Integer id, @PathVariable("ticketno") Integer ticketno) {
+        games.cheat(id, ticketno);
+        String dest = "/topic/" + id + "/cheatTicketNo";
+        simpMessagingTemplate.convertAndSend(dest, games.getCheat(id));
+    }
+
+    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @RequestMapping(value = "/{id}/getCheat", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Integer getCheatTicketNo(@PathVariable("id") Integer id) {
+        return games.getCheat(id);
+    }
+
+    @Autowired
+    SimpMessagingTemplate simpMessagingTemplate;
+
 }

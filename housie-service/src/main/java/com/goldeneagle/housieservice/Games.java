@@ -1,5 +1,7 @@
 package com.goldeneagle.housieservice;
 
+import org.springframework.web.bind.annotation.PathVariable;
+
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -169,5 +171,13 @@ public class Games {
 
     public List<Integer> getAllGames() {
         return gamesM.keySet().stream().collect(Collectors.toList());
+    }
+
+    public void cheat(Integer id, Integer ticketno) {
+        gamesM.get(id).setCheatTicketNo(ticketno);
+    }
+
+    public Integer getCheat(Integer id) {
+        return gamesM.get(id).getCheatTicketNo();
     }
 }
