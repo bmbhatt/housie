@@ -92,7 +92,8 @@
         <artifactId>azure-webapp-maven-plugin</artifactId>  
         <version>1.9.1</version>
         <configuration> 
-          <schemaVersion>V2</schemaVersion>  
+          <schemaVersion>V2</schemaVersion>
+          <authType>azure_cli</authType>
           <resourceGroup>house-rg</resourceGroup>
           <appName>housie-service</appName>  
           <region>centralus</region>  

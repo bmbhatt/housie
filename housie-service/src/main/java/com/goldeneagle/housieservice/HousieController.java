@@ -15,37 +15,37 @@ public class HousieController {
     @Autowired
     Games games;
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/{id}/previous", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Integer getPrevious(@PathVariable("id") Integer id) {
         return games.getPrevious(id);
     }
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/{id}/current", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Integer getCurrent(@PathVariable("id") Integer id) {
         return games.getCurrent(id);
     }
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/{id}/ifBoardReset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Boolean getIfBoardIsReset(@PathVariable("id") Integer id) {
         return games.getIfBoardIsReset(id);
     }
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Integer getNext(@PathVariable("id") Integer id) {
         return games.getNext(id);
     }
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Integer> getAll(@PathVariable("id") Integer id) {
         return games.getAll(id);
     }
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/{id}/reset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public void reset(@PathVariable("id") Integer id, HttpServletRequest request) {
         if (request != null) {
@@ -54,31 +54,31 @@ public class HousieController {
         games.reset(id);
     }
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/ticket", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Ticket ticket() {
         return games.myTicket();
     }
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/newgame", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Integer newGame() {
         return games.newGame();
     }
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/{id}/finishgame", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public void finishGame(@PathVariable("id") Integer id) {
         games.finishGame(id);
     }
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/getallgames", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Integer> getAllGames() {
         return games.getAllGames();
     }
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/{id}/cheat/{ticketno}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public void cheatTicketNo(@PathVariable("id") Integer id, @PathVariable("ticketno") Integer ticketno) {
         games.cheat(id, ticketno);
@@ -86,7 +86,7 @@ public class HousieController {
         simpMessagingTemplate.convertAndSend(dest, games.getCheat(id));
     }
 
-    @CrossOrigin(origins = {Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER})
+    @CrossOrigin
     @RequestMapping(value = "/{id}/getCheat", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Integer getCheatTicketNo(@PathVariable("id") Integer id) {
         return games.getCheat(id);

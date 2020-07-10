@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/housie/gs-guide-websocket")
-                .setAllowedOrigins(Constants.LOCAL_SERVER, Constants.GCP_SERVER, Constants.AZURE_SERVER)
+                .setAllowedOrigins(Constants.LOCALHOST_4200, Constants.LOCALHOST_8080, Constants.GCP_SERVER, Constants.AZURE_SERVER)
                 .withSockJS();
     }
 }
