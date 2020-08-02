@@ -38,8 +38,8 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.subscription = timer(10000, 10000).pipe(
       switchMap(() => this.apiService.checkIfBoardIsReset())
     ).subscribe((gameReset: boolean) => {
-      if(gameReset)
-        location.reload();
+      // if(gameReset)
+      //   location.reload();
     });
   }
 
@@ -53,7 +53,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   checkIfBoardIsReset(): void {
-    //this.apiService.checkIfBoardIsReset();
+    this.apiService.checkIfBoardIsReset();
   }
 
   reset(): void {
