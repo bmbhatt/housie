@@ -5,13 +5,13 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.2.6.RELEASE</version>
+    <version>2.4.5</version>
     <relativePath />
     <!-- lookup parent from repository -->
   </parent>
   <groupId>com.goldeneagle</groupId>
   <artifactId>housie-service</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <name>housie-service</name>
   <description>Housie Service</description>
   <properties>
