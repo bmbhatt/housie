@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar housie-service-0.0.3-SNAPSHOT.jar
+java -jar housie-service-0.0.4-SNAPSHOT.jar
