@@ -1,4 +1,4 @@
-From node:14.4.0 AS compile-image
+From node:lts AS compile-image
 # RUN npm install -g yarn
 
 WORKDIR /opt/ng
