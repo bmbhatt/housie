@@ -21,7 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/housie/gs-guide-websocket")
                 .setAllowedOrigins(Constants.LOCALHOST, Constants.LOCALHOST_4200, Constants.LOCALHOST_8080,
-                        Constants.GCP_SERVER, Constants.AZURE_SERVER)
+                        Constants.LOCALHOST_8081, Constants.GCP_SERVER, Constants.AZURE_SERVER)
                 .withSockJS();
     }
 }

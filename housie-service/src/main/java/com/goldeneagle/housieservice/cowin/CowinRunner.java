@@ -26,8 +26,8 @@ public class CowinRunner {
                 return t;
             }
         };
-        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1, threadFactory);
-        scheduledExecutorService.scheduleWithFixedDelay(() -> coWinService.calendarByDistrictIds(Constant.DEFAULT_DISTRICT,
-                Constant.CURRENT_DATE_STR), 0, 4, TimeUnit.SECONDS);
+//        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1, threadFactory);
+//        scheduledExecutorService.scheduleWithFixedDelay(() -> coWinService.calendarByDistrictIds(Constant.DEFAULT_DISTRICT,
+//                Constant.CURRENT_DATE_STR), 0, 4, TimeUnit.SECONDS);
     }
 }

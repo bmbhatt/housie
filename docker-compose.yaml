@@ -1,0 +1,32 @@
+version: '3'
+services:
+  # Frontend Service 
+  housie-app:
+    build:
+      context: housie-app # Use an image built from the specified dockerfile in the `housie-app` directory.
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80" # Map the exposed port 80 on the container to port 8081 on the host machine
+    restart: always
+    depends_on:
+      - housie-service
+    networks:
+      - frontend  
+
+  # App backend service
+  housie-service:
+    build:
+      context: housie-service # Use an image built from the specified dockerfile in the `housie-service` directory.
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+    command: run-housie-service.sh
+    networks: # Networks to join (Services on the same network can communicate with each other using their name)
+      - backend
+      - frontend
+
+# Networks to be created to facilitate communication between containers
+networks:
+  backend:
+  frontend: 
